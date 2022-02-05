@@ -12,66 +12,71 @@ const configureClient = async () => {
     });
   };
 
-  window.onload = async () => {
-    await configureClient();
-  
+window.onload = async () => {
+await configureClient();
+
+updateUI();
+const isAuthenticated = await auth0.isAuthenticated();
+
+if (isAuthenticated) {
+    // show the gated content
+    return;
+}
+
+    const query = window.location.search;
+    if (query.includes("code=") && query.includes("state=")) {
+
+    // Process the login state
+    await auth0.handleRedirectCallback();
+    
     updateUI();
-    const isAuthenticated = await auth0.isAuthenticated();
+
+    // Use replaceState to redirect the user away and remove the querystring parameters
+    window.history.replaceState({}, document.title, "/");
+}
+
+
+};
   
-    if (isAuthenticated) {
-      // show the gated content
-      return;
-    }
-  
-      const query = window.location.search;
-      if (query.includes("code=") && query.includes("state=")) {
-  
-      // Process the login state
-      await auth0.handleRedirectCallback();
-      
-      updateUI();
-  
-      // Use replaceState to redirect the user away and remove the querystring parameters
-      window.history.replaceState({}, document.title, "/");
-    }
-  
-  
-  }
-  
-  const updateUI = async () => {
-    const isAuthenticated = await auth0.isAuthenticated();
+const updateUI = async () => {
+const isAuthenticated = await auth0.isAuthenticated();
+
+
+
+
+
+if (isAuthenticated) {
+    const user = await auth0.getUser()
+    document.getElementById("btn-menu-div").classList.remove("hidden");
+    document.getElementById("btn-login-div").classList.add("hidden");
+    document.getElementById("gated-content").classList.remove("hidden");
+
     
-    
+
+} else {
+    document.getElementById("btn-login-div").classList.remove("hidden");
+    document.getElementById("gated-content").classList.add("hidden");
+}
+
+
+
+};
   
-    
+const login = async () => {
+await auth0.loginWithRedirect({
+    redirect_uri: window.location.origin,
+    scope: 'read:users',
+});
+};
   
-    if (isAuthenticated) {
-      const user = await auth0.getUser()
-      document.getElementById("btn-menu-div").classList.remove("hidden");
-      document.getElementById("btn-login-div").classList.add("hidden");
-      document.getElementById("gated-content").classList.remove("hidden");
-  
-      
-  
-    } else {
-      document.getElementById("btn-login-div").classList.remove("hidden");
-      document.getElementById("gated-content").classList.add("hidden");
-    }
-  
-  
-  
-  };
-  
-  const login = async () => {
-    await auth0.loginWithRedirect({
-      redirect_uri: window.location.origin,
-      scope: 'read:users',
-    });
-  };
-  
-  
-  const logout = () => {
-    auth0.logout({
-      returnTo: window.location.origin
-    });
-  };
+
+const logout = () => {
+auth0.logout({
+    returnTo: window.location.origin
+});
+};
+
+const profile = () => {
+
+}
+
