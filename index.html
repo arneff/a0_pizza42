@@ -13,16 +13,18 @@
             <div class="container-fluid">
                 <a class="navbar-brand"> Pizza 42</a>
                 <div class="d-flex" >
-                <button class="btn btn-primary hidden" id="btn-login" onclick="login()">Log in</button>
-                <div class="dropdown hidden" id="menu">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Menu
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" onclick="logout()">Logout</a></li>
-                    </ul>
-                </div>
+                    <div class="login hidden" id="btn-login-div">
+                        <button class="btn btn-primary" id="btn-login" onclick="login()">Log in</button>
+                    </div>
+                    <div class="dropdown hidden" id="btn-menu-div">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menu
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" onclick="logout()">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>  
             </div>
             </nav>
@@ -30,19 +32,7 @@
 
         </div>
         <div class="hidden" id="gated-content">
-            <p>
-                You're seeing this content because you're currently
-                <strong>logged in</strong>.
-            </p>
-            <label>
-                Access token:
-                <pre id="ipt-access-token"></pre>
-            </label>
-            <label>
-                User profile:
-                <pre id="ipt-user-profile"></pre>
-                </label>
-            <button id="btn-call-api" disabled="true" onclick="callApi()">Call Api</button>
+            
         </div>
     </div>
     
