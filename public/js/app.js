@@ -96,35 +96,54 @@ const callApi = async () => {
   
       // Get the access token from the Auth0 client
       const token = await auth0.getTokenSilently();
-  
+      const user = await auth0.getUser();
+      const date = Date.now();
+
+      //set auth0 user_metadata
+      user.user_metadata = user.user_metadata || {};
+      user.user_metadata.orders = user.user_metadata.orders || {};
+      user.user_metadata.orders = {"date": date, "Pizza": "XL"}
+      console.log(user.user_metadata)
       // Make the call to the API, setting the token
       // in the Authorization header
       const response = await fetch("http://localhost:3001/api/external", {
         headers: {
           "Authorization": `Bearer ${token}`,
+          "Content-type": "application/json"
 
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify(user.user_metadata.orders)
       });
   
       // Fetch the JSON result
       responseStatus = response.status
       if (responseStatus > 200) {
-        responseData = { msg: "Insufficent Scope: a scope of read:users is required" }
+        document.getElementById("api-call-result").classList.add('alert-danger');
+        responseData = "Insufficent Scope: a scope of read:users is required"
       } else {
+        document.getElementById("api-call-result").classList.add('alert-success');
         responseData = await response.json();
       }
       
   
     //   Display the result in the output element
-      document.getElementById("api-call-result").classList.add('alert-danger');
+      
       const responseElement = document.getElementById("api-call-result");
       responseElement.innerText = JSON.stringify(responseData, {}, 2);
+      console.log(user.user_metadata.orders)
 
 
   
   } catch (e) {
       // Display errors in the console
       console.error(e)
+      if (e instanceof Error) {
+          if (e.message === 'Login required'){
+            document.getElementById("api-call-result").classList.add('alert-danger');
+            document.getElementById("api-call-result").innerText = e
+          }
+      }     
     }
   };
   
