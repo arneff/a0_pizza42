@@ -116,6 +116,7 @@ const callApi = async () => {
       
   
     //   Display the result in the output element
+      document.getElementById("api-call-result").classList.add('alert-danger');
       const responseElement = document.getElementById("api-call-result");
       responseElement.innerText = JSON.stringify(responseData, {}, 2);
 
