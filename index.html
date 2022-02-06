@@ -21,21 +21,54 @@
                         Menu
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" onclick="home()">Home</a></li>
+                        <li><a class="dropdown-item" onclick="profile()">Profile</a></li>
                         <li><a class="dropdown-item" onclick="logout()">Logout</a></li>
                         </ul>
                     </div>
                 </div>  
             </div>
             </nav>
-        <div class="pizza">
-
+        <pre id="api-call-result"></pre>
+        <div class="pizza" id="pizza-content">
+            <div class="row">
+                <div class="col-sm-4">
+                  <div class="card text-center">
+                    <div class="card-body">
+                      <h5 class="card-title">XL Pizza</h5>
+                      <a href="#" class="btn btn-primary" onclick="callApi()">Buy Now</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="card text-center">
+                    <div class="card-body">
+                      <h5 class="card-title">Medium Pizza</h5>
+                      <a href="#" class="btn btn-primary" onclick="callApi()">Buy Now</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card text-center">
+                      <div class="card-body">
+                        <h5 class="card-title">Small Pizza</h5>
+                        <a href="#" class="btn btn-primary" onclick="callApi()">Buy Now</a>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              
         </div>
-        <div class="hidden" id="gated-content">
-            
+        <div class="profile hidden" id="profile-content">
+            <ul class="list-unstyled">
+                <li><strong>Name:</strong><pre id="user.nickname"></pre></li>
+                <li><strong>Email:</strong><pre id="user.email"></pre></li>
+                <li><strong>Email Verified:</strong><pre id="user.email_verified"></pre></li>
+                <li><strong>Order History:</strong><pre id="user.metadata"></pre></li>
+            </ul>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
     <script src="js/app.js"></script>
