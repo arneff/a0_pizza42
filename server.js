@@ -3,7 +3,7 @@ const { join } = require("path");
 const authConfig = require("./auth_config.json");
 const { requiredScopes } = require('express-oauth2-jwt-bearer');
 const { auth } = require("express-oauth2-jwt-bearer");
-
+require('dotenv').config()
 
 const app = express();
 const api = express();

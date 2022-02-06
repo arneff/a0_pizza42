@@ -112,7 +112,6 @@ const callApi = async () => {
         responseData = { msg: "Insufficent Scope: a scope of read:users is required" }
       } else {
         responseData = await response.json();
-        console.log(responseData)
       }
       
   
@@ -120,7 +119,7 @@ const callApi = async () => {
       const responseElement = document.getElementById("api-call-result");
       responseElement.innerText = JSON.stringify(responseData, {}, 2);
 
-      
+
   
   } catch (e) {
       // Display errors in the console
