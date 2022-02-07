@@ -80,10 +80,10 @@ const profile = async () => {
     const user = await auth0.getUser()
     document.getElementById("pizza-content").classList.add("hidden");
     document.getElementById("profile-content").classList.remove("hidden");
-    document.getElementById("user.nickname").innerHTML = user.name;
+    document.getElementById("user.picture").src=user.picture;
+    document.getElementById("user.name").innerHTML = user.name;
     document.getElementById("user.email").innerHTML = user.email;
-    document.getElementById("user.email_verified").innerHTML = user.email_verified;
-    document.getElementById("user.metadata").innerHTML = JSON.stringify(user.user_metadata);
+    document.getElementById("user.idToken").innerHTML = JSON.stringify(user["https://p42.com/orders"])
 }
 
 const home = () => {

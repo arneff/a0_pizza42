@@ -45,7 +45,6 @@ app.get("/*", (_, res) => {
 // protect this route from unauthorized requests
 api.post("/api/external", checkJwt, checkScopes, async (req, res) => {
   user_id = req.auth.payload.sub
-  console.log(user_id)
   res.send({msg: "Your order has been received!", body: req.body});
   
   //request body for mgmt api access token
@@ -65,7 +64,6 @@ api.post("/api/external", checkJwt, checkScopes, async (req, res) => {
   });
   mResp = await mReq.json();
   mToken = mResp.access_token
-  console.log(mToken)
 
   // define object to hold metadata
   uMeta = {

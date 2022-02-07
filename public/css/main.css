@@ -20,3 +20,7 @@ label {
   float: none; /* Added */
   margin-bottom: 10px; /* Added */
 }
+
+img {
+  border-radius: 50%;
+}
