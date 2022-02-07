@@ -48,6 +48,7 @@ const isAuthenticated = await auth0.isAuthenticated();
 
 if (isAuthenticated) {
     const user = await auth0.getUser()
+    console.log(user)
     document.getElementById("btn-menu-div").classList.remove("hidden");
     document.getElementById('dropdownMenuButton1').innerHTML = user.name;
     document.getElementById("btn-login-div").classList.add("hidden");
@@ -64,7 +65,7 @@ if (isAuthenticated) {
 const login = async () => {
 await auth0.loginWithRedirect({
     redirect_uri: window.location.origin,
-    scope: 'read:users',
+    scope: 'update:current_user_metadata',
 });
 };
   
@@ -77,13 +78,12 @@ auth0.logout({
 
 const profile = async () => {
     const user = await auth0.getUser()
-    console.log(user)
     document.getElementById("pizza-content").classList.add("hidden");
     document.getElementById("profile-content").classList.remove("hidden");
     document.getElementById("user.nickname").innerHTML = user.name;
     document.getElementById("user.email").innerHTML = user.email;
     document.getElementById("user.email_verified").innerHTML = user.email_verified;
-    document.getElementById("user.metadata").innerHTML = "";
+    document.getElementById("user.metadata").innerHTML = JSON.stringify(user.user_metadata);
 }
 
 const home = () => {
@@ -91,14 +91,26 @@ const home = () => {
     document.getElementById("profile-content").classList.add("hidden");
 }
 
-const callApi = async () => {
+const callApi = async (user, context, callback) => {
     try {
   
       // Get the access token from the Auth0 client
       const token = await auth0.getTokenSilently();
+    //   const claims = await auth0.getIdTokenClaims();
+    //   console.log(claims)
       const user = await auth0.getUser();
+      meta = user.user_metadata
       const date = Date.now();
 
+      const userMeta = await fetch('https://dev-h1uc4uvp.us.auth0.com/userinfo', {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-type": "application/json"
+  
+          }
+      })
+      uMResp = await userMeta.json()
+      console.log(uMResp)
       //set auth0 user_metadata
       user.user_metadata = user.user_metadata || {};
       user.user_metadata.orders = user.user_metadata.orders || {};
@@ -128,10 +140,8 @@ const callApi = async () => {
       
   
     //   Display the result in the output element
-      
       const responseElement = document.getElementById("api-call-result");
       responseElement.innerText = JSON.stringify(responseData, {}, 2);
-      console.log(user.user_metadata.orders)
 
 
   

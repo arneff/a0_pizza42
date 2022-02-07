@@ -16,7 +16,7 @@ const checkJwt = auth({
   issuerBaseURL: `https://${authConfig.domain}`
 });
 
-const checkScopes = requiredScopes('read:users');
+const checkScopes = requiredScopes('update:current_user_metadata');
 
 // Serve static assets from the /public folder
 app.use(express.static(join(__dirname, "public")));
@@ -44,25 +44,76 @@ app.get("/*", (_, res) => {
 
 // protect this route from unauthorized requests
 api.post("/api/external", checkJwt, checkScopes, async (req, res) => {
+  user_id = req.auth.payload.sub
+  console.log(user_id)
   res.send({msg: "Your order has been received!", body: req.body});
   
   //request body for mgmt api access token
-  rBody = `{
-    "client_id": "${process.env.mgmt_client_id}", 
-    "client_secret": "${process.env.mgmt_client_secret}",
-    "grant_type": "client_credentials",
-    "audience": "${process.env.audience}"
-  }`
-  const mReq = await fetch('https:dev-h1uc4uvp.us.auth0.com/oauth/token', {
+  const mReq = await fetch('https://dev-h1uc4uvp.us.auth0.com/oauth/token', {
     headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/x-www-form-urlencoded",
     },
     method: 'POST',
-    body: rBody
+    body: new URLSearchParams( {
+      'grant_type': 'client_credentials',
+      'client_id': `${process.env.CLIENTID}`,
+      'client_secret': `${process.env.CLIENTSECRET}`,
+      'audience': 'https://dev-h1uc4uvp.us.auth0.com/api/v2/',
+      'scope': 'read:users read:user_idp_tokens update:users update:users_app_metadata'
+    })
+  
   });
   mResp = await mReq.json();
   mToken = mResp.access_token
+  console.log(mToken)
+
+  // define object to hold metadata
+  uMeta = {
+    user_metadata: {
+      "orders":[req.body]
+    }
+  }
+  // get user to see if user_metadata is present
+  const userReq = await fetch(`https:dev-h1uc4uvp.us.auth0.com/api/v2/users/${user_id}?` +
+    new URLSearchParams({
+      'fields': 'user_metadata',
+      'include_fields': true }), {
+    headers: {
+      "Authorization": `Bearer ${mToken}`,
+      "Content-Type": "application/json",
+    }
+  });
   
+  userResp = await userReq.json() 
+  
+  if (!userResp.user_metadata.orders){
+    const metaReq = await fetch(`https:dev-h1uc4uvp.us.auth0.com/api/v2/users/${user_id}`, {
+      headers: {
+        "Authorization": `Bearer ${mToken}`,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify(uMeta)
+    });
+    metaResp = await metaReq.json()
+
+  } else {
+    userResp.user_metadata.orders.push(req.body)
+    const metaAdd = await fetch(`https:dev-h1uc4uvp.us.auth0.com/api/v2/users/${user_id}`, {
+      headers: {
+        "Authorization": `Bearer ${mToken}`,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify(userResp)
+    });
+    addResp = await metaAdd.json()
+  }
+//   userResp.user_metadata.orders.push(req.body)
+ 
+  
+
+
 });
 
 api.use(function(err, req, res, next) {
