@@ -124,7 +124,7 @@ api.use(function(err, req, res, next) {
 
 
 // Listen on port 3000
-app.listen(3000, () => console.log("Application running on port 3000"));
-api.listen(3001, () => console.log("Application running on port 3001"));
+app.listen(process.env.PORT || 3000, () => console.log("Application running on port 3000"));
+api.listen(process.env.PORT || 3001, () => console.log("Application running on port 3001"));
 
 
